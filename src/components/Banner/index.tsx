@@ -1,21 +1,24 @@
 import { Imagem, Titulo, Precos } from './styles'
+import { ErrorOrLoading } from '../../styles'
 import Tag from '../Tag'
 import Button from '../Button'
-import { useEffect, useState } from 'react'
-import { Game } from '../../pages/Home'
 import { formatPrice } from '../ProductsList'
 
+import { useGetFeatureGameQuery } from '../../services/api'
+
 const Banner = () => {
-  const [gameOfTheDay, setGameOfTheDay] = useState<Game>()
+  const { data: gameOfTheDay, error, isLoading } = useGetFeatureGameQuery()
 
-  useEffect(() => {
-    fetch('https://ebac-fake-api.vercel.app/eplay/destaque')
-      .then((res) => res.json())
-      .then((data) => setGameOfTheDay(data))
-  }, [])
+  if (isLoading) {
+    return <ErrorOrLoading>Carregando...</ErrorOrLoading>
+  }
 
-  if (!gameOfTheDay) {
-    return <h3>Carregando...</h3>
+  if (error || !gameOfTheDay) {
+    return (
+      <ErrorOrLoading>
+        {error && 'Not found never with query of the API'}
+      </ErrorOrLoading>
+    )
   }
 
   return (

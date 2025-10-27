@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 
 export const cores = {
   branca: '#eeeeee',
@@ -28,4 +28,11 @@ export const GlobalCss = createGlobalStyle`
   width: 100%;
   margin: 0 auto;
   }
+`
+export const ErrorOrLoading = styled.h3`
+  color: red;
+  opacity: 0.5;
+  text-align: center;
+  padding-bottom: 40px;
+  font-size: 32px;
 `
