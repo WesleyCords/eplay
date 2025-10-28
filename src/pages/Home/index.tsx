@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import Banner from '../../components/Banner'
 import ProductsList from '../../components/ProductsList'
 
@@ -41,8 +40,18 @@ const Home = () => {
     return (
       <>
         <Banner />
-        <ProductsList games={onSale} title="Promoções" background="gray" />
-        <ProductsList games={soonList} title="Em breve" background="black" />
+        <ProductsList
+          games={onSale}
+          title="Promoções"
+          background="gray"
+          id="on-sale"
+        />
+        <ProductsList
+          games={soonList}
+          title="Em breve"
+          background="black"
+          id="comig-soon"
+        />
       </>
     )
   }
