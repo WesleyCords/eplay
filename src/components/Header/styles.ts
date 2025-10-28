@@ -31,8 +31,13 @@ export const LinkItem = styled.li`
   margin-right: 16px;
 `
 
-export const LinkCart = styled.a`
+export const CartButton = styled.a`
   display: flex;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
 
   img {
     margin-left: 16px;
