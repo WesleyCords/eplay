@@ -6,6 +6,7 @@ export const Items = styled.ul`
   grid-template-columns: repeat(auto-fit, 150px);
   gap: 16px;
   height: 150px;
+  flex-wrap: wrap;
 `
 
 export const Action = styled.div`
