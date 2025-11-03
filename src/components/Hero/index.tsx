@@ -29,13 +29,13 @@ const Hero = ({ game }: HeroProps) => {
         </div>
         <Infos>
           <h2>{game.name}</h2>
-          {game.price.actual && (
+          {game.prices.current && (
             <>
               <p>
-                {game.price.previous && (
-                  <span>De {formatPrice(game.price.discount)}</span>
+                {game.prices.old && (
+                  <span>De {formatPrice(game.prices.discount)}</span>
                 )}
-                por {formatPrice(game.price.actual)}
+                por {formatPrice(game.prices.current)}
               </p>
               <Button
                 title="Click here to add for Cart"

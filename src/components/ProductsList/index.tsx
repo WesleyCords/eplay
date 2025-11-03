@@ -19,14 +19,14 @@ export const formatPrice = (price = 0) => {
 const ProductsList = ({ background, title, games, id }: Props) => {
   const getGamesTags = (game: Game) => {
     const tags = []
-    if (game.releaseDate) {
-      tags.push(game.releaseDate)
+    if (game.release_date) {
+      tags.push(game.release_date)
     }
-    if (game.price.discount) {
-      tags.push(`${game.price.discount}% OFF`)
+    if (game.prices.discount) {
+      tags.push(`${game.prices.discount}% OFF`)
     }
-    if (game.price.actual) {
-      tags.push(formatPrice(game.price.actual))
+    if (game.prices.current) {
+      tags.push(formatPrice(game.prices.current))
     }
     return tags
   }

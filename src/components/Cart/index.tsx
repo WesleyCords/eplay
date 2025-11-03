@@ -26,7 +26,7 @@ const Cart = () => {
   }
 
   const setTotalPrice = () => {
-    return items.reduce((total, item) => total + (item.price.actual || 0), 0)
+    return items.reduce((total, item) => total + (item.prices.current || 0), 0)
   }
 
   const removeFromCart = (id: number) => {
@@ -44,7 +44,7 @@ const Cart = () => {
                 <h3>{item.name}</h3>
                 <Tag>{item.details.category}</Tag>
                 <Tag>{item.details.system}</Tag>
-                <span>{formatPrice(item.price.actual)}</span>
+                <span>{formatPrice(item.prices.current)}</span>
               </div>
               <button type="button" onClick={() => removeFromCart(item.id)} />
             </CartItem>

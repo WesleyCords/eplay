@@ -28,8 +28,8 @@ const Banner = () => {
         <div>
           <Titulo>{gameOfTheDay.name}</Titulo>
           <Precos>
-            De <span>{formatPrice(gameOfTheDay.price.discount)}</span> <br />
-            por apenas {formatPrice(gameOfTheDay.price.actual)}
+            De <span>{formatPrice(gameOfTheDay.prices.old)}</span> <br />
+            por apenas {formatPrice(gameOfTheDay.prices.current)}!
           </Precos>
         </div>
         <Button

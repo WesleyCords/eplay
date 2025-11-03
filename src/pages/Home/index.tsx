@@ -12,11 +12,11 @@ export type Game = {
   id: number
   name: string
   description: string
-  releaseDate?: string
-  price: {
+  release_date?: string
+  prices: {
     discount?: number
-    actual?: number
-    previous?: number
+    old?: number
+    current?: number
   }
   details: {
     category: string
