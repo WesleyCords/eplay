@@ -19,12 +19,7 @@ const Button = ({
 }: Props) => {
   if (type === 'button') {
     return (
-      <ButtonContainer
-        variant={variant}
-        type="button"
-        title={title}
-        onClick={onClick}
-      >
+      <ButtonContainer variant={variant} title={title} onClick={onClick}>
         {children}
       </ButtonContainer>
     )
