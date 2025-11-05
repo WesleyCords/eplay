@@ -5,9 +5,14 @@ import Card from '../../components/Card'
 import { InputGroup, Row, TabButton } from './styles'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import { usePurchaseGameMutation } from '../../services/api'
+import { useSelector } from 'react-redux'
+import { RootReducer } from '../../store'
 
 const Checkout = () => {
   const [payWithCard, setPayWithCard] = useState(false)
+  const { items } = useSelector((state: RootReducer) => state.cart)
+  const [purchase, { data }] = usePurchaseGameMutation()
 
   const form = useFormik({
     initialValues: {
@@ -90,7 +95,34 @@ const Checkout = () => {
         )
     }),
     onSubmit: (values) => {
-      console.log(values)
+      purchase({
+        billing: {
+          document: values.cpf,
+          email: values.email,
+          name: values.fullName
+        },
+        delivery: {
+          email: values.deliveryEmail
+        },
+        payment: {
+          card: {
+            active: payWithCard,
+            owner: {
+              name: values.cardName,
+              document: values.cpfCardOwner
+            },
+            name: values.cardPrintedName,
+            number: values.cardNumber,
+            expiry: {
+              month: Number(values.expiryMonth),
+              year: Number(values.expiryYear)
+            },
+            code: Number(values.cvv)
+          },
+          installments: Number(values.installments)
+        },
+        products: [{ id: 1, price: 200 }]
+      })
     }
   })
 
@@ -102,6 +134,14 @@ const Checkout = () => {
       return message
     }
     return ''
+  }
+
+  const handleSumbit = () => {
+    if (items.length > 0) {
+      form.handleSubmit()
+    } else {
+      alert('Seu carrinho está vazio!')
+    }
   }
 
   const getContentPayment = () => {
@@ -237,99 +277,138 @@ const Checkout = () => {
   }
 
   return (
-    <form onSubmit={form.handleSubmit} className="container">
-      <Card title="Dados de Cobrança">
-        <Row>
-          <InputGroup>
-            <label htmlFor="fullName">Nome Completo</label>
-            <input
-              type="text"
-              id="fullName"
-              name="fullName"
-              value={form.values.fullName}
-              onChange={form.handleChange}
-              onBlur={form.handleBlur}
-            />
-            <small>{getErrorMessage('fullName', form.errors.fullName)}</small>
-          </InputGroup>
-          <InputGroup>
-            <label htmlFor="email">E-mail</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={form.values.email}
-              onChange={form.handleChange}
-              onBlur={form.handleBlur}
-            />
-            <small>{getErrorMessage('email', form.errors.email)}</small>
-          </InputGroup>
-          <InputGroup>
-            <label htmlFor="cpf">CPF</label>
-            <input
-              type="text"
-              id="cpf"
-              name="cpf"
-              value={form.values.cpf}
-              onChange={form.handleChange}
-              onBlur={form.handleBlur}
-            />
-            <small>{getErrorMessage('cpf', form.errors.cpf)}</small>
-          </InputGroup>
-        </Row>
-        <h3 className="margin-top">Dados de entrega - conteudo digital</h3>
-        <Row>
-          <InputGroup>
-            <label htmlFor="deliveryEmail">E-mail</label>
-            <input
-              type="text"
-              id="deliveryEmail"
-              name="deliveryEmail"
-              value={form.values.deliveryEmail}
-              onChange={form.handleChange}
-              onBlur={form.handleBlur}
-            />
-            <small>
-              {getErrorMessage('deliveryEmail', form.errors.deliveryEmail)}
-            </small>
-          </InputGroup>
-          <InputGroup>
-            <label htmlFor="confirmEmail">Confirme o email</label>
-            <input
-              type="email"
-              id="confirmEmail"
-              name="confirmEmail"
-              value={form.values.confirmEmail}
-              onChange={form.handleChange}
-              onBlur={form.handleBlur}
-            />
-            <small>
-              {getErrorMessage('confirmEmail', form.errors.confirmEmail)}
-            </small>
-          </InputGroup>
-        </Row>
-      </Card>
-      <Card title="Dados de Pagamento">
-        <TabButton
-          active={payWithCard}
-          type="button"
-          onClick={() => setPayWithCard(true)}
-        >
-          Pagar com cartão
-        </TabButton>
-        <TabButton
-          active={!payWithCard}
-          type="button"
-          onClick={() => setPayWithCard(false)}
-        >
-          Pagar com boleto
-        </TabButton>
-        <div className="margin-top">{getContentPayment()}</div>
-      </Card>
-      <Button title="Click here for finally buy" type="button">
-        Finalizar Compra
-      </Button>
-    </form>
+    <div className="container">
+      {data ? (
+        <Card title="Muito obrigado">
+          <p>
+            É com satisfação que informamos que recebemos seu pedido com
+            sucesso!
+            <br />
+            Abaixo estão os detalhes da sua compra: <br /> Número do pedido:
+            {data.orderId} <br /> Forma de pagamento:{' '}
+            {payWithCard ? 'Cartão de Crédito' : 'Boleto Bancário'}
+          </p>
+          <p className="margin-top">
+            Caso tenha optado pelo pagamento via boleto bancário, lembre-se de
+            que a confirmação pode levar até 3 dias úteis. Após a aprovação do
+            pagamento, enviaremos um e-mail contendo o código de ativação do
+            jogo.
+          </p>
+          <p className="margin-top">
+            Se você optou pelo pagamento com cartão de crédito, a liberação do
+            código de ativação ocorrerá após a aprovação da transação pela
+            operadora do cartão. Você receberá o código no e-mail cadastrado em
+            nossa loja.
+          </p>
+          <p className="margin-top">
+            Pedimos que verifique sua caixa de entrada e a pasta de spam para
+            garantir que receba nossa comunicação. Caso tenha alguma dúvida ou
+            necessite de mais informações, por favor, entre em contato conosco
+            através dos nossos canais de atendimento ao cliente.
+          </p>
+          <p className="margin-top">
+            Agradecemos por escolher a EPLAY e esperamos que desfrute do seu
+            jogo!
+          </p>
+        </Card>
+      ) : (
+        <form onSubmit={handleSumbit} className="container">
+          <Card title="Dados de Cobrança">
+            <Row>
+              <InputGroup>
+                <label htmlFor="fullName">Nome Completo</label>
+                <input
+                  type="text"
+                  id="fullName"
+                  name="fullName"
+                  value={form.values.fullName}
+                  onChange={form.handleChange}
+                  onBlur={form.handleBlur}
+                />
+                <small>
+                  {getErrorMessage('fullName', form.errors.fullName)}
+                </small>
+              </InputGroup>
+              <InputGroup>
+                <label htmlFor="email">E-mail</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={form.values.email}
+                  onChange={form.handleChange}
+                  onBlur={form.handleBlur}
+                />
+                <small>{getErrorMessage('email', form.errors.email)}</small>
+              </InputGroup>
+              <InputGroup>
+                <label htmlFor="cpf">CPF</label>
+                <input
+                  type="text"
+                  id="cpf"
+                  name="cpf"
+                  value={form.values.cpf}
+                  onChange={form.handleChange}
+                  onBlur={form.handleBlur}
+                />
+                <small>{getErrorMessage('cpf', form.errors.cpf)}</small>
+              </InputGroup>
+            </Row>
+            <h3 className="margin-top">Dados de entrega - conteudo digital</h3>
+            <Row>
+              <InputGroup>
+                <label htmlFor="deliveryEmail">E-mail</label>
+                <input
+                  type="text"
+                  id="deliveryEmail"
+                  name="deliveryEmail"
+                  value={form.values.deliveryEmail}
+                  onChange={form.handleChange}
+                  onBlur={form.handleBlur}
+                />
+                <small>
+                  {getErrorMessage('deliveryEmail', form.errors.deliveryEmail)}
+                </small>
+              </InputGroup>
+              <InputGroup>
+                <label htmlFor="confirmEmail">Confirme o email</label>
+                <input
+                  type="email"
+                  id="confirmEmail"
+                  name="confirmEmail"
+                  value={form.values.confirmEmail}
+                  onChange={form.handleChange}
+                  onBlur={form.handleBlur}
+                />
+                <small>
+                  {getErrorMessage('confirmEmail', form.errors.confirmEmail)}
+                </small>
+              </InputGroup>
+            </Row>
+          </Card>
+          <Card title="Dados de Pagamento">
+            <TabButton
+              active={payWithCard}
+              type="button"
+              onClick={() => setPayWithCard(true)}
+            >
+              Pagar com cartão
+            </TabButton>
+            <TabButton
+              active={!payWithCard}
+              type="button"
+              onClick={() => setPayWithCard(false)}
+            >
+              Pagar com boleto
+            </TabButton>
+            <div className="margin-top">{getContentPayment()}</div>
+          </Card>
+          <Button title="Click here for finally buy" type="button">
+            Finalizar Compra
+          </Button>
+        </form>
+      )}
+    </div>
   )
 }
 

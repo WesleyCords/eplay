@@ -1,5 +1,13 @@
 import { Link } from 'react-router-dom'
-import { HeaderBar, Links, LinkItem, CartButton } from './styles'
+import {
+  HeaderBar,
+  Links,
+  LinkItem,
+  CartButton,
+  MobileMenu,
+  HeaderRow,
+  NavMobile
+} from './styles'
 import logo from '../../assets/images/logo.svg'
 import carrinho from '../../assets/images/carrinho.svg'
 
@@ -17,28 +25,35 @@ const Header = () => {
 
   return (
     <HeaderBar>
-      <div>
-        <Link to="/">
-          <img src={logo} alt="EPLAY" />
-        </Link>
-        <nav>
-          <Links>
-            <LinkItem>
-              <Link to="/categories">Categorias</Link>
-            </LinkItem>
-            <LinkItem>
-              <a href="#">Novidades</a>
-            </LinkItem>
-            <LinkItem>
-              <a href="#">Promoções</a>
-            </LinkItem>
-          </Links>
-        </nav>
-      </div>
-      <CartButton onClick={openCart}>
-        {items.length} - produto(s)
-        <img src={carrinho} alt="Carrinho" />
-      </CartButton>
+      <HeaderRow>
+        <div>
+          <MobileMenu>
+            <span />
+            <span />
+            <span />
+          </MobileMenu>
+          <Link to="/">
+            <img src={logo} alt="EPLAY" />
+          </Link>
+          <NavMobile>
+            <Links>
+              <LinkItem>
+                <Link to="/categories">Categorias</Link>
+              </LinkItem>
+              <LinkItem>
+                <a href="#">Novidades</a>
+              </LinkItem>
+              <LinkItem>
+                <a href="#">Promoções</a>
+              </LinkItem>
+            </Links>
+          </NavMobile>
+        </div>
+        <CartButton onClick={openCart}>
+          {items.length} <span> - produto(s)</span>
+          <img src={carrinho} alt="Carrinho" />
+        </CartButton>
+      </HeaderRow>
     </HeaderBar>
   )
 }
